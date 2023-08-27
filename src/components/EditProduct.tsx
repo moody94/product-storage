@@ -123,7 +123,7 @@ const EditProduct = () => {
           <Input
             variant="filled"
             placeholder="Price"
-            onChange={(e: ChangeEvent) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onInputChange("productPrice", e.target.value, dispatch, state)
             }
             defaultValue={editProduct?.productPrice}
@@ -133,7 +133,7 @@ const EditProduct = () => {
           )}
           {/* when user add new chars to the price or type that will update the state */}
           <Select
-            onChange={(e: ChangeEvent) =>
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               onInputChange("productType", e.target.value, dispatch, state)
             }
             placeholder="Select your product Type"
