@@ -1,70 +1,78 @@
 import React, { useState, useReducer } from "react";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { DownloadIcon, NotAllowedIcon } from "@chakra-ui/icons";
 import { useNavigate } from "react-router-dom";
 import { Input, Stack, Box, Button, Text, Select } from "@chakra-ui/react";
+import validateInput from "../utils/validateInput";
+import { onInputChange } from "../utils/formutils";
+import formReducer from "../reducers/formReducer";
+import {
+  UPDATE_FORM,
+  FormState,
+  UpdateFormAction,
+} from "../types/platfromsTypes";
 export const addproduct = "/addproduct";
 
-interface initialState {
-  productName: String;
-  productPrice: String;
-  productType: String;
-}
-interface ProductAction {
-  type: ProductActionKind;
-  payload: string;
-}
-
-const initialState = {
-  productName: "",
-  productPrice: "",
-  productType: "",
-};
-
-enum ProductActionKind {
-  PRODUCTNAME = "ProductName",
-  PRODUCTPRICE = "ProductPrice",
-  PRODUCTTYPE = "ProductType",
-}
-
-const reducer = (state: initialState, action: ProductAction) => {
-  switch (action.type) {
-    case ProductActionKind.PRODUCTNAME:
-      return { ...state, productName: action.payload };
-    case ProductActionKind.PRODUCTTYPE:
-      return { ...state, productType: action.payload };
-    case ProductActionKind.PRODUCTPRICE:
-      return { ...state, productPrice: action.payload };
-    case ProductActionKind.PRODUCTPRICE:
-      return { ...state, productPrice: action.payload };
-    default:
-      return state;
-  }
+export const initialState = {
+  productName: { value: "", touched: false, hasError: true, error: "" },
+  productPrice: { value: "", touched: false, hasError: true, error: "" },
+  productType: { value: "", touched: false, hasError: true, error: "" },
+  isFormValid: false,
 };
 
 const AddProduct = () => {
   const navigate = useNavigate();
 
   // used like usestate but for many states
-  const [state, dispatch] = useReducer(reducer, initialState);
-  const [errorMessage, setErrorMessage] = useState(false);
-  console.log("state", state);
-  const setProductName = () => {
-    // get item from the storage
-    const itemExists = localStorage.getItem(state.productName);
-    // if found the item change the valie to true
-    setErrorMessage(itemExists !== null);
-    // IF NOT exist add the value
-    if (!itemExists) {
-      localStorage.setItem(
-        state.productName,
-        JSON.stringify({
-          productPrice: state.productPrice,
-          productType: state.productType,
-        })
-      );
-    }
-  };
+  // const [state, dispatch] = useReducer(formReducer, initialState);
+  const [state, dispatch] = useReducer<
+    React.Reducer<FormState, UpdateFormAction>
+  >(formReducer, initialState);
+  const [showError, setShowError] = useState(false);
 
+  const setProductInfo = (e: React.MouseEvent<HTMLElement> ) => {
+    e.preventDefault(); //prevents the form from submitting
+    let isFormValid = true;
+    // loop throw the for loop after i fill it with new values
+    for (const name in state) {
+      const item = state[name as keyof FormState];
+      const { value } = item;
+      const { hasError, error } = validateInput(name, value);
+
+      if (hasError) {
+        isFormValid = false;
+      }
+      if (name) {
+        dispatch({
+          type: UPDATE_FORM,
+          payload: {
+            name,
+            value,
+            hasError,
+            error,
+            touched: true,
+            isFormValid,
+          },
+        });
+      }
+    }
+    if (!isFormValid) {
+      setShowError(true);
+    } else {
+        localStorage.setItem(
+          state.productName.value,
+          JSON.stringify({
+            productPrice: state.productPrice.value,
+            productType: state.productType.value,
+          })
+        );
+        navigate("/")
+    }
+
+    // Hide the error message after 5 seconds
+    setTimeout(() => {
+      setShowError(false);
+    }, 5000);
+  };
   //type represenet the name of the object element that i want to prosses
   // paylod represent the info that i want to send
 
@@ -75,52 +83,51 @@ const AddProduct = () => {
     <>
       <Box m={20}>
         <Text fontSize="3xl">Create a new product</Text>
+        {showError && !state.isFormValid && (
+          <div className="form_error">Please fill all the fields correctly</div>
+        )}
         <Stack boxShadow="Base">
           <Input
             variant="filled"
             placeholder="Product"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              dispatch({
-                type: ProductActionKind.PRODUCTNAME,
-                payload: e.target.value,
-              })
+              onInputChange("productName", e.target.value, dispatch, state)
             }
           />
-          {errorMessage && <Text>Error: The Product already exists.</Text>}
+          {state.productName.hasError && <Text>{state.productName.error}</Text>}
           <Input
             variant="filled"
             placeholder="Price"
-            onChange={(e: any) =>
-              dispatch({
-                type: ProductActionKind.PRODUCTPRICE,
-                payload: e.target.value,
-              })
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              onInputChange("productPrice", e.target.value, dispatch, state)
             }
           />
+          {state.productPrice.hasError && (
+            <Text>{state.productPrice.error}</Text>
+          )}
+
           <Select
-            onChange={(e: any) =>
-              dispatch({
-                type: ProductActionKind.PRODUCTTYPE,
-                payload: e.target.value,
-              })
+            onChange={(e: ChangeEvent<HTMLInputElement>) =>
+              onInputChange("productType", e.target.value, dispatch, state)
             }
             placeholder="Select your product Type"
           >
             <option value="Integrated">Integrated</option>
             <option value="Peripheral">Peripheral</option>
           </Select>
+          {state.productType.hasError && <Text>{state.productType.error}</Text>}
         </Stack>
         <br></br>
-        <Button colorScheme="green" onClick={setProductName}>
-          Save
+        <Button colorScheme="green" onClick={setProductInfo}>
+          Save <DownloadIcon />
+      
         </Button>
         <Button
           onClick={() => {
             navigate("/");
           }}
         >
-          {" "}
-          Cancle <ArrowBackIcon />
+          Cancle <NotAllowedIcon />
         </Button>
       </Box>
     </>

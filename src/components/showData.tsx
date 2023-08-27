@@ -9,7 +9,7 @@ import {
   TableCaption,
   Thead,
   Tbody,
-  Tfoot,
+
   Text,
   Tr,
   Th,
@@ -20,10 +20,26 @@ const ShowData = () => {
   const navigate = useNavigate();
 
   const items = { ...localStorage };
-  const products: number[] = Object.values(items);
+  // let items = {"muhamed": "{}", "muhamed kheer": '{"productPrice":"11","productType":"Integrated"}'}
+  let products = [];
 
-  //   setData(products);
-  console.log("hge", products);
+  // get the object from localhost and covert it to a list of objects
+
+  for (const [key, value] of Object.entries(items)) {
+    try {
+      const trimmedValue = value.trim(); // Trim whitespace
+      const parsedValue = JSON.parse(trimmedValue);
+
+      const productObject = {
+        productName: key,
+        productValue: parsedValue,
+      };
+
+      products.push(productObject);
+    } catch (error) {
+      console.error(`Error parsing JSON for key ${key}:`, error);
+    }
+  }
 
   return (
     <Box padding={30}>
@@ -44,19 +60,28 @@ const ShowData = () => {
               <Thead>
                 <Tr>
                   <Th>Product Name</Th>
-                  <Th>into</Th>
-                  <Th isNumeric>multiply by</Th>
+                  <Th>price</Th>
+                  <Th>type</Th>
                 </Tr>
               </Thead>
               <Tbody>
                 {products.map((product: any) => (
-                  <Tr>
+                  <Tr
+                    onClick={() => {
+                      navigate(`/editproduct/${product["productName"]}`)
+                    }}
+                  >
                     <Td>
-                      {" "}
-                      <Th key={product}>{product}</Th>
+                      <Th key={product["productName"]}>
+                        {product["productName"]}
+                      </Th>
                     </Td>
-                    <Td>millimetres (mm)</Td>
-                    <Td isNumeric>25.4</Td>
+                    <Td>
+                      <Th>{product["productValue"]["productPrice"]}</Th>
+                    </Td>
+                    <Td>
+                      <Th>{product["productValue"]["productType"]}</Th>
+                    </Td>
                   </Tr>
                 ))}
               </Tbody>
