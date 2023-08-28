@@ -16,7 +16,6 @@ import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
 const ShowData = () => {
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false);
   const items = { ...localStorage };
   // let items = {"muhamed": "{}", "muhamed kheer": '{"productPrice":"11","productType":"Integrated"}'}
   let products = [];
