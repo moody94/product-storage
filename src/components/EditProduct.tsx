@@ -152,7 +152,7 @@ const EditProduct = () => {
           colorScheme="red"
           onClick={() => {
             localStorage.removeItem(productName);
-            navigate("");
+            navigate("/");
           }}
         >
           Delete <DeleteIcon />
