@@ -29,14 +29,14 @@ const AddProduct = () => {
   >(formReducer, initialState);
   const [showError, setShowError] = useState(false);
 
-  const setProductInfo = (e: React.MouseEvent<HTMLElement> ) => {
+  const setProductInfo = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault(); //prevents the form from submitting
     let isFormValid = true;
     // loop throw the for loop after i fill it with new values
     for (const name in state) {
       const item = state[name as keyof FormState];
       const { value } = item;
-      const { hasError, error } = validateInput(name, value);
+      const { hasError, error } = validateInput(name, value, false);
 
       if (hasError) {
         isFormValid = false;
@@ -58,14 +58,14 @@ const AddProduct = () => {
     if (!isFormValid) {
       setShowError(true);
     } else {
-        localStorage.setItem(
-          state.productName.value,
-          JSON.stringify({
-            productPrice: state.productPrice.value,
-            productType: state.productType.value,
-          })
-        );
-        navigate("/")
+      localStorage.setItem(
+        state.productName.value,
+        JSON.stringify({
+          productPrice: state.productPrice.value,
+          productType: state.productType.value,
+        })
+      );
+      navigate("/");
     }
 
     // Hide the error message after 5 seconds
@@ -91,15 +91,27 @@ const AddProduct = () => {
             variant="filled"
             placeholder="Product"
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onInputChange("productName", e.target.value, dispatch, state)
+              onInputChange(
+                "productName",
+                e.target.value,
+                dispatch,
+                state,
+                false
+              )
             }
           />
           {state.productName.hasError && <Text>{state.productName.error}</Text>}
           <Input
             variant="filled"
             placeholder="Price"
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              onInputChange("productPrice", e.target.value, dispatch, state)
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onInputChange(
+                "productPrice",
+                e.target.value,
+                dispatch,
+                state,
+                false
+              )
             }
           />
           {state.productPrice.hasError && (
@@ -107,8 +119,14 @@ const AddProduct = () => {
           )}
 
           <Select
-            onChange={(e: ChangeEvent<HTMLInputElement>) =>
-              onInputChange("productType", e.target.value, dispatch, state)
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              onInputChange(
+                "productType",
+                e.target.value,
+                dispatch,
+                state,
+                false
+              )
             }
             placeholder="Select your product Type"
           >
@@ -120,7 +138,6 @@ const AddProduct = () => {
         <br></br>
         <Button colorScheme="green" onClick={setProductInfo}>
           Save <DownloadIcon />
-      
         </Button>
         <Button
           onClick={() => {

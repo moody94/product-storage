@@ -8,7 +8,7 @@ import { ValidationResults } from "../types/platfromsTypes";
 // in this fucntion we validate the inputs to get the upexepted inputs for all validates
 
 // the edit parameter just to disable the validation on product existing in local storage when we are in edit mode
-const validateInput = (name: string, value: string, mode: string): ValidationResults => {
+const validateInput = (name: string, value: string, mode: boolean): ValidationResults => {
   const itemExists = localStorage.getItem(value);
   let hasError = false,
     error = "";
@@ -20,7 +20,7 @@ const validateInput = (name: string, value: string, mode: string): ValidationRes
       } else if (!/^[a-zA-Z ]+$/.test(value)) {
         hasError = true;
         error = "Invalid product name. Avoid Special characters";
-      } else if (itemExists && mode !== "edit") {
+      } else if (itemExists && mode !== true) {
         hasError = true;
         error = "Product is already in the store";
       } else {

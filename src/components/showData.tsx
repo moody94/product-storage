@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Button,
@@ -6,19 +5,18 @@ import {
   Spacer,
   TableContainer,
   Table,
-  TableCaption,
   Thead,
   Tbody,
-
   Text,
   Tr,
   Th,
   Td,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { useState } from "react";
 const ShowData = () => {
   const navigate = useNavigate();
-
+  const [isHovered, setIsHovered] = useState(false);
   const items = { ...localStorage };
   // let items = {"muhamed": "{}", "muhamed kheer": '{"productPrice":"11","productType":"Integrated"}'}
   let products = [];
@@ -40,22 +38,20 @@ const ShowData = () => {
       console.error(`Error parsing JSON for key ${key}:`, error);
     }
   }
-
   return (
     <Box padding={30}>
       <Box
-        p={100}
+        p={3}
         bgGradient="#333"
         w="100%"
-        h="70vh"
+        h="80vh"
         boxShadow="dark-lg"
         borderRadius={10}
       >
         {products.length === 0 && <Text>There are no items to show </Text>}
         <>
           <TableContainer>
-            <Table variant="striped" colorScheme="teal">
-              <TableCaption>Imperial to metric conversion factors</TableCaption>
+            <Table variant="striped">
               <Thead>
                 <Tr>
                   <Th>Product Name</Th>
@@ -66,8 +62,9 @@ const ShowData = () => {
               <Tbody>
                 {products.map((product: any) => (
                   <Tr
+  
                     onClick={() => {
-                      navigate(`/editproduct/${product["productName"]}`)
+                      navigate(`/editproduct/${product["productName"]}`);
                     }}
                   >
                     <Td>

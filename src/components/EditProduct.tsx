@@ -32,7 +32,7 @@ const EditProduct = () => {
   // we used useEffect to fill the state with  product data from local storag if user does not fill in the forms
   useEffect(() => {
     if (state.productName.value == "") {
-      onInputChange("productName", productName, dispatch, state, "edit");
+      onInputChange("productName", productName, dispatch, state, true);
     }
     if (state.productPrice.value == "") {
       onInputChange(
@@ -40,7 +40,7 @@ const EditProduct = () => {
         editProduct?.productPrice,
         dispatch,
         state,
-        "edit"
+        true
       );
     }
     if (state.productType.value == "") {
@@ -49,7 +49,7 @@ const EditProduct = () => {
         editProduct?.productType,
         dispatch,
         state,
-        "edit"
+        true
       );
     }
   }, [editProduct]);
@@ -62,7 +62,7 @@ const EditProduct = () => {
     for (const name in state) {
       const item = state[name as keyof FormState];
       const { value } = item;
-      const { hasError, error } = validateInput(name, value, "edit");
+      const { hasError, error } = validateInput(name, value, true);
 
       if (hasError) {
         isFormValid = false;

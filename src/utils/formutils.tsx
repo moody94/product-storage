@@ -10,7 +10,7 @@ export const onInputChange = (
   value: string,
   dispatch: Dispatch<UpdateFormAction>,
   state: FormState,
-  mode: string
+  mode: boolean
 ) => {
   const { hasError, error } = validateInput(name, value, mode);
 
