@@ -52,7 +52,6 @@ const ShowData = () => {
         borderRadius={10}
       >
         {products.length === 0 && <Text>There are no items to show </Text>}
-        {/* {products.length > 0 ? products : "hej hje"} */}
         <>
           <TableContainer>
             <Table variant="striped" colorScheme="teal">
