@@ -1,8 +1,12 @@
 import validateInput from "./validateInput";
 import { Dispatch } from "react";
-import { FormState, UpdateFormAction, FormField } from "../types/platfromsTypes";
+import {
+  FormState,
+  UpdateFormAction,
+  FormField,
+} from "../types/platfromsTypes";
 export const UPDATE_FORM = "UPDATE_FORM";
-// in this page we get the error message from the inialState opjects if it found and validate on every char the user write 
+// in this page we get the error message from the inialState opjects if it found and validate on every char the user write
 
 // the name is the field name and the value is the value that user write in  filed name
 export const onInputChange = (
@@ -10,9 +14,10 @@ export const onInputChange = (
   value: string,
   dispatch: Dispatch<UpdateFormAction>,
   state: FormState,
-  mode: boolean
+  mode: boolean,
+  isIntegrated: boolean
 ) => {
-  const { hasError, error } = validateInput(name, value, mode);
+  const { hasError, error } = validateInput(name, value, mode, isIntegrated);
 
   let isFormValid = true;
   // for loop on every initialState item to check if there are any harErorr is true
@@ -23,8 +28,7 @@ export const onInputChange = (
     if (i === name && hasError) {
       isFormValid = false;
       break;
-    }
-    else if (i !== name && item.hasError) {
+    } else if (i !== name && item.hasError) {
       // Check if any other field has error
       isFormValid = false;
       break;
@@ -34,6 +38,6 @@ export const onInputChange = (
   // dispatch is a function send the new intialstate with the new values to the reducer
   dispatch({
     type: UPDATE_FORM,
-    payload: { name, value, hasError, error, touched: false, isFormValid },
+    payload: { name, value, hasError, error, isFormValid },
   });
 };

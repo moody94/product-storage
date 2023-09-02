@@ -6,12 +6,12 @@ import { FormState, UpdateFormAction } from "../types/platfromsTypes";
 const formsReducer = (state: FormState, action: UpdateFormAction) => {
   switch (action.type) {
     case UPDATE_FORM:
-      const { name, value, hasError, error, touched, isFormValid } =
+      const { name, value, hasError, error,isFormValid } =
         action.payload;
 
       return {
         ...state,
-        [name]: { ...state, value, hasError, error, touched },
+        [name]: { ...state, value, hasError, error },
         isFormValid,
       };
     default:

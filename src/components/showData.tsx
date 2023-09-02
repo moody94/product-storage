@@ -11,6 +11,7 @@ import {
   Tr,
   Th,
   Td,
+  Center,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
 import { useState } from "react";
@@ -21,7 +22,6 @@ const ShowData = () => {
   let products = [];
 
   // get the object from localhost and covert it to a list of objects
-
   for (const [key, value] of Object.entries(items)) {
     try {
       const trimmedValue = value.trim(); // Trim whitespace
@@ -34,7 +34,7 @@ const ShowData = () => {
 
       products.push(productObject);
     } catch (error) {
-      console.error(`Error parsing JSON for key ${key}:`, error);
+      console.error(`Error parsing JSON for key ${key}:`);
     }
   }
   return (
@@ -47,7 +47,6 @@ const ShowData = () => {
         boxShadow="dark-lg"
         borderRadius={10}
       >
-        {products.length === 0 && <Text>There are no items to show </Text>}
         <>
           <TableContainer>
             <Table variant="striped">
@@ -58,18 +57,20 @@ const ShowData = () => {
                   <Th>type</Th>
                 </Tr>
               </Thead>
+              {products.length === 0 && (
+                <Center fontSize="4xl" p={100} ml={350}>
+                  There are no items to show
+                </Center>
+              )}
               <Tbody>
                 {products.map((product: any) => (
                   <Tr
-  
                     onClick={() => {
                       navigate(`/editproduct/${product["productName"]}`);
                     }}
                   >
                     <Td>
-                      <Th key={product["productName"]}>
-                        {product["productName"]}
-                      </Th>
+                      <Th>{product["productName"]}</Th>
                     </Td>
                     <Td>
                       <Th>{product["productValue"]["productPrice"]}</Th>
